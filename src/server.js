@@ -28,10 +28,10 @@ const server = http.createServer((req, res) => {
       description: 'Estudo do curso ignite'
     })
 
-    return res.end("Criação de task")
+    return res.writeHead(201).end()
   }
 
-  return res.end('Ei, cidadão')
+  return res.writeHead(404).end()
 })
 
 server.listen(3334)
