@@ -8,17 +8,26 @@ import http from  'node:http'
 5. MArcar pelo id uma task completa
 
 */
-
+const tasks = []
 
 const server = http.createServer((req, res) => {
 
   const { method, url } = req
 
-  if(method == 'GET' && url == '/task') {
-    return res.end('Listagem de uma task')
+  if(method == 'GET' && url == '/tasks') {
+    return res
+    .setHeader('Content-type', 'application/json')
+    .end(JSON.stringify(tasks))
   }
 
-  if(method == 'POST' && url == '/task') {
+  if(method == 'POST' && url == '/tasks') {
+
+    tasks.push({
+      id: 1,
+      title: 'Programação',
+      description: 'Estudo do curso ignite'
+    })
+
     return res.end("Criação de task")
   }
 
