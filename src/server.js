@@ -1,7 +1,6 @@
 import http from  'node:http'
-import { randomUUID} from 'node:crypto'
-import { Database } from './middlewares/database.js'
 import { json } from './middlewares/json.js'
+import { routes } from './middlewares/routes.js'
 
 /* 
 1. Criação de uma task
@@ -11,7 +10,6 @@ import { json } from './middlewares/json.js'
 5. MArcar pelo id uma task completa
 
 */
-const database = new Database()
 
 const server = http.createServer(async (req, res) => {
 
@@ -19,28 +17,12 @@ const server = http.createServer(async (req, res) => {
 
   await json(req, res)
 
-  if(method == 'GET' && url == '/tasks') {
-    const tasks = database.select('tasks') // buscar todas as informação 
-    
-    return res.end(JSON.stringify(tasks))
+  const route = routes.find(route => {
+    return route.method == method && route.path == url
+  })
 
-    // * Só que se eu inicio meu servidor eu perco minha criação de task (tarefa)
-  }
-
-  if(method == 'POST' && url == '/tasks') {
-
-
-    const { title, description } = req.body
-
-    const task = {
-      id: randomUUID(),
-      title,
-      description,
-    }
-
-    database.insert('tasks', task)
-
-    return res.writeHead(201).end()
+  if (route) {
+    return route.handler(req, res)
   }
 
   return res.writeHead(404).end()
