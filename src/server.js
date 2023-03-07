@@ -1,4 +1,5 @@
 import http from  'node:http'
+import { Database } from './middlewares/database.js'
 import { json } from './middlewares/json.js'
 
 /* 
@@ -9,7 +10,7 @@ import { json } from './middlewares/json.js'
 5. MArcar pelo id uma task completa
 
 */
-const tasks = []
+const database = new Database()
 
 const server = http.createServer(async (req, res) => {
 
@@ -18,19 +19,25 @@ const server = http.createServer(async (req, res) => {
   await json(req, res)
 
   if(method == 'GET' && url == '/tasks') {
-    return res
-    .end(JSON.stringify(tasks))
+    const tasks = database.select('tasks') // buscar todas as informação 
+    
+    return res.end(JSON.stringify(tasks))
+
+    // * Só que se eu inicio meu servidor eu perco minha criação de task (tarefa)
   }
 
   if(method == 'POST' && url == '/tasks') {
 
+
     const { title, description } = req.body
 
-    tasks.push({
+    const task = {
       id: 1,
       title,
       description,
-    })
+    }
+
+    database.insert('tasks', task)
 
     return res.writeHead(201).end()
   }
