@@ -1,5 +1,11 @@
+import fs from 'node:fs/promises'
+
 export class Database {
   #database = {}
+
+  #persist() {
+    fs.writeFile('db.json', JSON.stringify(this.#database))
+  } // e o que vai escrever nosso banco de dados em um arq físico
 
   select(table) {
     const data = this.#database[table] ?? []
@@ -13,6 +19,8 @@ export class Database {
     } else {
       this.#database[table] = [data]
     } // a gente vai verificar se existi um registro inserido naquela tabela alí
+
+    this.#persist();
 
     return data;
   } // Esse insert vai receber a tabela do banco que eu qeuro fazer inserção e, os dados também.
