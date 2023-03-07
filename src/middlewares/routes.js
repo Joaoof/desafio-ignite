@@ -30,5 +30,23 @@ export const routes = [ // array de rotas
 
     return res.writeHead(201).end()
     }
+  },
+  {
+    method: 'DELETE',
+    path: '/tasks',
+    handler: (req, res) => {
+      
+    const { title, description } = req.body
+
+    const task = {
+      id: randomUUID(),
+      title,
+      description,
+    }
+
+    database.insert('tasks', task)
+
+    return res.writeHead(201).end()
+    }
   }
 ] 
