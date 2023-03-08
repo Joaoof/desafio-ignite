@@ -34,4 +34,13 @@ export class Database {
 
     return data;
   } // Esse insert vai receber a tabela do banco que eu qeuro fazer inserção e, os dados também.
+
+  delete(table, id) {
+    const rowIndex = this.#database[table].findIndex(row => row.id == id)
+
+    if (rowIndex > -1) {
+      this.#database[table].splice(rowIndex, 1)
+      this.#persist()
+    }
+  }
 }
