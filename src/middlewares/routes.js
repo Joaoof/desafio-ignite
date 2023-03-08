@@ -1,8 +1,8 @@
 import { randomUUID} from 'node:crypto'
-import { buildRoutePath } from '../utils/build-route-path.js'
 import { Database } from "./database.js"
-const database = new Database()
+import { buildRoutePath } from '../utils/build-route-path.js'
 
+const database = new Database()
 
 export const routes = [ // array de rotas
   {
@@ -34,20 +34,9 @@ export const routes = [ // array de rotas
   },
   {
     method: 'DELETE',
-    path: buildRoutePath('/tasks'),
+    path: buildRoutePath('/tasks/:id'),
     handler: (req, res) => {
-      
-    const { title, description } = req.body
-
-    const task = {
-      id: randomUUID(),
-      title,
-      description,
-    }
-
-    database.insert('tasks', task)
-
-    return res.writeHead(201).end()
+    return res.end()
     }
   }
 ] 
