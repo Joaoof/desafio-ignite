@@ -1,4 +1,5 @@
 import fs from 'node:fs/promises'
+import { title } from 'node:process'
 
 const databasePath = new URL('../../db.json', import.meta.url)
 export class Database {
@@ -39,8 +40,12 @@ export class Database {
     const rowIndex = this.#database[table].findIndex(row => row.id == id)
 
     if (rowIndex > -1) {
-      this.#database[table] = {  id, ...data}
+      this.#database[table][rowIndex] = {  id, ...data}
       this.#persist()
+    }
+
+    if(title != title && description == description) {
+      console.log('Atualize a descrição')
     }
 
   }
