@@ -2,7 +2,7 @@ import fs from 'node:fs/promises'
 
 const databasePath = new URL('../../db.json', import.meta.url)
 export class Database {
-  #database = {} 
+#database = {}
 
   constructor() { // recuperar os dados quamdo a aplicação inicializar
     fs.readFile(databasePath, 'utf8')
@@ -35,6 +35,15 @@ export class Database {
     return data;
   } // Esse insert vai receber a tabela do banco que eu qeuro fazer inserção e, os dados também.
 
+  update(table, id, data) {
+    const rowIndex = this.#database[table].findIndex(row => row.id == id)
+
+    if (rowIndex > -1) {
+      this.#database[table] = {  id, ...data}
+      this.#persist()
+    }
+
+  }
   delete(table, id) {
     const rowIndex = this.#database[table].findIndex(row => row.id == id)
 
