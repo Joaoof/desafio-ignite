@@ -14,11 +14,20 @@ export class Database {
   }
 
   #persist() {
-    fs.writeFile(databasePath, JSON.stringify(this.#database))
+    fs.writeFile(databasePath, JSON.stringify(this.#database, null, 2))
   } // e o que vai escrever nosso banco de dados em um arq físico
 
-  select(table) {
-    const data = this.#database[table] ?? []
+  select(table, search) {
+    let data = this.#database[table] ?? []
+
+    if (search) {
+      data = data.filter(row => {
+        return Object.entries(search).some(([key, value]) => {
+          if (!value) return true 
+            return row[key].includes(value)
+          })
+      })
+    }
 
     return data
   } // tabela que quero selecionar, e ele vai retornar todos os dados contido dentro desta tabela.
@@ -35,17 +44,19 @@ export class Database {
     return data;
   } // Esse insert vai receber a tabela do banco que eu qeuro fazer inserção e, os dados também.
 
+
   update(table, id, data) {
-    const rowIndex = this.#database[table].findIndex(row => row.id == id)
+    const rowIndex = this.#database[table].findIndex(row => row.id === id)
 
     if (rowIndex > -1) {
-      this.#database[table][rowIndex] = {  id, ...data}
+      const row = this.#database[table][rowIndex]
+      this.#database[table][rowIndex] = {  id, ...row, ...data}
       this.#persist()
     }
 
   }
   delete(table, id) {
-    const rowIndex = this.#database[table].findIndex(row => row.id == id)
+    const rowIndex = this.#database[table].findIndex(row => row.id === id)
 
     if (rowIndex > -1) {
       this.#database[table].splice(rowIndex, 1)

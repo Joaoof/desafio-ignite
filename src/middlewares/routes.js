@@ -10,9 +10,12 @@ export const routes = [ // array de rotas
     path: buildRoutePath('/tasks'),
     handler: (req, res) => {
 
-      console.log(req.query)
+      const { search } = req.query
 
-      const tasks = database.select('tasks') // buscar todas as informação 
+      const tasks = database.select('tasks', {
+        title: search,
+        description: search,
+      }) // buscar todas as informação 
     
       return res.end(JSON.stringify(tasks))
     }
@@ -47,12 +50,29 @@ export const routes = [ // array de rotas
     const { id } = req.params 
     const { title, description } = req.body
 
+    const [ tasks ] = database.select('tasks', { id })
+    
+    const updateData = !!tasks.update_at
+    const update_at = updateData ? null : new Date()
+
+    const taskIndex = tasks.findIndex(task => task.id === id)
+   
+
+    if (title) {
+      tasks[taskIndex].title = title;
+    }
+    if (description) {
+      tasks[taskIndex].description = description;
+    }
+    
+   
     database.update('tasks', id, {
       title,
       description,
+      update_at
+      
     })
 
-  
 
     return res.writeHead(204).end()
     }
@@ -68,5 +88,33 @@ export const routes = [ // array de rotas
 
     return res.writeHead(204).end()
     }
+  },
+{
+  method: 'PATCH',
+  path: buildRoutePath('/tasks/:id/complete'),
+  handler: (req, res) => {
+
+  const { id } = req.params  
+
+
+  const [ tasks ] = database.select('tasks', { id })
+
+  if (!tasks) {
+    return res.status(404).json({ error: 'Task not found' });
   }
+
+  // código para marcar a task como completa ou não
+
+  
+  const isTaskCompleted = !!tasks.completed_at
+  const completed_at = isTaskCompleted ? null : new Date()
+
+  database.update('tasks', id, { completed_at })
+
+  return res.writeHead(204).end()
+
+
+ 
+  }
+}
 ] 
