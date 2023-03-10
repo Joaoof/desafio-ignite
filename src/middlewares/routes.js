@@ -50,26 +50,23 @@ export const routes = [ // array de rotas
     const { id } = req.params 
     const { title, description } = req.body
 
-    const [ tasks ] = database.select('tasks', { id })
     
-    const updateData = !!tasks.update_at
-    const update_at = updateData ? null : new Date()
+    if(!title || !description) {
+    return res.writeHead(400).end(
+      JSON.stringify({ message: 'title or description are required' }))
+   }
 
-    const taskIndex = tasks.findIndex(task => task.id === id)
-   
+   const [ task ] = database.select('tasks', { id })
 
-    if (title) {
-      tasks[taskIndex].title = title;
-    }
-    if (description) {
-      tasks[taskIndex].description = description;
-    }
+   if(!task) {
+    return res.writeHead(404).end()
+   }    
     
    
     database.update('tasks', id, {
       title,
       description,
-      update_at
+      update_at: new Date()
       
     })
 
@@ -86,8 +83,14 @@ export const routes = [ // array de rotas
 
     database.delete('tasks', id)
 
+    if(!task) {
+      return res.writeHead(404).end()
+     } 
+
     return res.writeHead(204).end()
     }
+
+    
   },
 {
   method: 'PATCH',
@@ -100,7 +103,8 @@ export const routes = [ // array de rotas
   const [ tasks ] = database.select('tasks', { id })
 
   if (!tasks) {
-    return res.status(404).json({ error: 'Task not found' });
+    return res.writeHead(400).end(
+      JSON.stringify({ message: 'task não existente dentro do banco de dados!' }))
   }
 
   // código para marcar a task como completa ou não
@@ -112,7 +116,6 @@ export const routes = [ // array de rotas
   database.update('tasks', id, { completed_at })
 
   return res.writeHead(204).end()
-
 
  
   }

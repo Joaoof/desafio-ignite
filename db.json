@@ -2,9 +2,10 @@
   "tasks": [
     {
       "id": "b1132a03-6d87-402a-a7ee-988d5bd2c63b",
-      "title": "NodeJS",
-      "description": "Aprendeer a proogramar é coisa de doido, mas eu amo a tecnologia e um dia serei um expert na área",
-      "update_at": "2023-03-10T09:15:34.369Z"
+      "title": "NodeJS.Expert titulo0101",
+      "description": "oi",
+      "update_at": "2023-03-10T11:25:21.107Z",
+      "completed_at": "2023-03-10T11:29:23.696Z"
     },
     {
       "id": "3bff3497-3bd2-4d64-a1e7-c6e0248d89c8",
@@ -229,7 +230,7 @@
       "created_at": "2023-03-09T13:59:51.212Z",
       "update_at": "2023-03-09T13:59:51.212Z",
       "complete_at": null,
-      "completed_at": null
+      "completed_at": "2023-03-10T11:28:36.760Z"
     },
     {
       "id": "95caca79-af38-4b99-9b17-55954540a9aa",
