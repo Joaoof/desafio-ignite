@@ -6,26 +6,22 @@ const database = new Database()
 
 export const routes = [ // array de rotas
   {
-    method: 'GET',
-    path: buildRoutePath('/tasks'),
-    handler: (req, res) => {
-
-      const { search } = req.query
-
-      const tasks = database.select('tasks', {
-        title: search,
-        description: search,
-      }) // buscar todas as informação 
-    
-      return res.end(JSON.stringify(tasks))
-    }
-  },
-  {
     method: 'POST',
     path: buildRoutePath('/tasks'),
     handler: (req, res) => {
+
+      
       
     const { title, description } = req.body
+
+
+    // if(title == 0 || description == 0) {
+    //   return res.writeHead(404).end(JSON.stringify({ message: 'title and description are required' }))
+    // }
+
+    if(!title || !description ) {
+      return res.writeHead(404).end()
+    }
 
     const task = {
       id: randomUUID(),
@@ -43,6 +39,21 @@ export const routes = [ // array de rotas
     }
   },
   {
+    method: 'GET',
+    path: buildRoutePath('/tasks'),
+    handler: (req, res) => {
+
+      const { search } = req.query
+
+      const tasks = database.select('tasks', {
+        title: search,
+        description: search,
+      }) // buscar todas as informação 
+    
+      return res.end(JSON.stringify(tasks))
+    }
+  },
+  {
     method: 'PUT',
     path: buildRoutePath('/tasks/:id'),
     handler: (req, res) => {
@@ -50,6 +61,10 @@ export const routes = [ // array de rotas
     const { id } = req.params 
     const { title, description } = req.body
 
+
+    if(!title || !description ) {
+      return res.writeHead(404).end()
+    }
     
     if(!title || !description) {
     return res.writeHead(400).end(
@@ -80,17 +95,19 @@ export const routes = [ // array de rotas
     handler: (req, res) => {
 
     const { id } = req.params 
-
-    database.delete('tasks', id)
-
-    if(!task) {
-      return res.writeHead(404).end()
-     } 
-
-    return res.writeHead(204).end()
-    }
+    
+    const [tasks] = database.select('tasks', {id})
 
     
+    if(!tasks) {
+      return res.writeHead(404).end()
+    } 
+    
+  
+  database.delete('tasks', id)
+  
+  return res.writeHead(204).end()
+  }
   },
 {
   method: 'PATCH',
